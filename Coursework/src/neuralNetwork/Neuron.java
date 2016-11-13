@@ -75,7 +75,9 @@ public class Neuron implements Serializable
     //We determine if the neuron is firing or not using the activation function
     public void Activate() 
     {
+    	//Calculate the weighted sum
         CalculateWeightedSum();
+        //We calculate the output using the activation function
         output = activationFunction.activate(weightedSum);
         derivative = activationFunction.derivative(output);
     }

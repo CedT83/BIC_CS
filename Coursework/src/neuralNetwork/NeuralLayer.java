@@ -4,12 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class NeuralLayer implements Serializable {
 
-    /**
-	 * 
-	 */
 	//Without this line, we get a warning at compilation
 	private static final long serialVersionUID = 1L;
 	//The list of neurons which compose the layer

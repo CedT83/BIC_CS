@@ -4,183 +4,100 @@ public class Program {
 
 	public static void main(String[] args) {
 
+		//We create our perceptron here and define its architecture
+        Perceptron perceptron = createUntrainedPerceptron();
+        //Creates the trainer for the perceptron using training data
+        TrainerGenerator TrainingDataGenerator = new TrainingDataGenerator();
 
-        Perceptron untrained = createUntrainedXorPerceptron();
-        TrainerGenerator xorTrainingDataGenerator = new TrainingDataGenerator();
+        //crates the packpropagator object with the perceptron and its characteristics
+        BackPropagator backpropagator = new BackPropagator(perceptron, 0.8, 0.9, 0);
+        //We define here the desired trainer and the minimal error
+        //And we train until the error is reached
+        backpropagator.train(TrainingDataGenerator, 0.0001);
 
-        BackPropagator backpropagator = new BackPropagator(untrained, 0.8, 0.9, 0);
-        backpropagator.train(xorTrainingDataGenerator, 0.0001);
+        //A line to show the training is done and can proceed to the tests
+        System.out.println("Testing untrained neural network");
 
-        System.out.println("Testing trained XOR neural network");
+        //We choose the test values, and print the result given by the neural network
+        perceptron.setInputs(new double[]{0, 0});
+        System.out.println("0 - 0: " + (perceptron.getOutput()[0]));
 
-        untrained.setInputs(new double[]{0, 0});
-        System.out.println("0 - 0: " + (untrained.getOutput()[0]));
+        //We repeat with other values
+        perceptron.setInputs(new double[]{.17, 1});
+        System.out.println("0.17 - 0.88: " + (perceptron.getOutput()[0]));
 
-        untrained.setInputs(new double[]{0, 1});
-        System.out.println("0 - 1: " + (untrained.getOutput()[0]));
+        perceptron.setInputs(new double[]{0.02, 0.44});
+        System.out.println("0.02 - 0.44: " + (perceptron.getOutput()[0]));
 
-        untrained.setInputs(new double[]{1, 0});
-        System.out.println("1 - 0: " + (untrained.getOutput()[0]));
-
-        untrained.setInputs(new double[]{1, 1});
-        System.out.println("1 - 1: " + (untrained.getOutput()[0]) + "\n");
-
-        untrained.persist();
-    }
-
-	
-    private static Perceptron createXorPerceptron() {
-        Perceptron xorPerceptron = new Perceptron("XOR Network");
-
-        NeuralLayer inputNeuralLayer = new NeuralLayer(null);
-
-        Neuron a = new Neuron(new SigmoidActivationFunction());
-        a.setOutput(0);
-
-        Neuron b = new Neuron(new SigmoidActivationFunction());
-        b.setOutput(0);
-
-        inputNeuralLayer.AddNeuron(a);
-        inputNeuralLayer.AddNeuron(b);
-
-        NeuralLayer hiddenNeuralLayer = new NeuralLayer(inputNeuralLayer);
-
-        Neuron hiddenA = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenB = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenC = new Neuron(new SigmoidActivationFunction());
-
-        hiddenNeuralLayer.AddNeuron(hiddenA);
-        hiddenNeuralLayer.AddNeuron(hiddenB);
-        hiddenNeuralLayer.AddNeuron(hiddenC);
-        
-        
-        NeuralLayer hiddenNeuralLayer2 = new NeuralLayer(inputNeuralLayer);
-
-        Neuron hiddenA2 = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenB2 = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenC2 = new Neuron(new SigmoidActivationFunction());
-
-        hiddenNeuralLayer.AddNeuron(hiddenA2);
-        hiddenNeuralLayer.AddNeuron(hiddenB2);
-        hiddenNeuralLayer.AddNeuron(hiddenC2);
-
-        NeuralLayer outputNeuralLayer = new NeuralLayer(hiddenNeuralLayer2);
-        Neuron xorNeuron = new Neuron(new SigmoidActivationFunction());
-        outputNeuralLayer.AddNeuron(xorNeuron);
-
-        xorPerceptron.addNeuralLayer(inputNeuralLayer);
-        xorPerceptron.addNeuralLayer(hiddenNeuralLayer);
-        xorPerceptron.addNeuralLayer(outputNeuralLayer);
-
-        return xorPerceptron;
+        perceptron.setInputs(new double[]{1, 1});
+        System.out.println("1 - 1: " + (perceptron.getOutput()[0]) + "\n");
     }
     
-    private static Perceptron createUntrainedXorPerceptron() {
-        Perceptron xorNeuralNetwork = new Perceptron("Trained XOR Network");
+    private static Perceptron createUntrainedPerceptron() {
+        Perceptron NeuralNetwork = new Perceptron("Untrained Network");
 
         Neuron inputBias = new Neuron(new SigmoidActivationFunction());
         inputBias.setOutput(1);
         NeuralLayer inputLayer = new NeuralLayer(null, inputBias);
 
-        Neuron a = new Neuron(new SigmoidActivationFunction());
-        a.setOutput(0);
+        Neuron A = new Neuron(new SigmoidActivationFunction());
+        A.setOutput(0);
 
-        Neuron b = new Neuron(new SigmoidActivationFunction());
-        b.setOutput(0);
+        Neuron B = new Neuron(new SigmoidActivationFunction());
+        B.setOutput(0);
         
 
-        inputLayer.AddNeuron(a);
-        inputLayer.AddNeuron(b);
+        inputLayer.AddNeuron(A);
+        inputLayer.AddNeuron(B);
 
         
 
-////////////////// 1st hidden layer
+        ////////////////// 1st hidden layer
         Neuron bias = new Neuron(new SigmoidActivationFunction());
         bias.setOutput(1);
         NeuralLayer hiddenLayer = new NeuralLayer(inputLayer, bias);
 
         Neuron hiddenA = new Neuron(new SigmoidActivationFunction());
         Neuron hiddenB = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenC = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenD = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenE = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenF = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenG = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenH = new Neuron(new SigmoidActivationFunction());
+//        Neuron hiddenC = new Neuron(new SigmoidActivationFunction());
+//        Neuron hiddenD = new Neuron(new SigmoidActivationFunction());
+
 
 
         hiddenLayer.AddNeuron(hiddenA);
         hiddenLayer.AddNeuron(hiddenB);
-        hiddenLayer.AddNeuron(hiddenC);
-        hiddenLayer.AddNeuron(hiddenD);
-        hiddenLayer.AddNeuron(hiddenE);
-        hiddenLayer.AddNeuron(hiddenF);
-        hiddenLayer.AddNeuron(hiddenG);
-        hiddenLayer.AddNeuron(hiddenH); 
+//        hiddenLayer.AddNeuron(hiddenC);
+//        hiddenLayer.AddNeuron(hiddenD);
 
 
      
-//////////////////// 2nd hidden layer
-   /*               bias.setOutput(1);
+        //////////////////// 2nd hidden layer
+        bias.setOutput(1);
         NeuralLayer hiddenLayer2 = new NeuralLayer(hiddenLayer, bias);
 
         Neuron hiddenA2 = new Neuron(new SigmoidActivationFunction());
         Neuron hiddenB2 = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenC2 = new Neuron(new SigmoidActivationFunction());
+//        Neuron hiddenC2 = new Neuron(new SigmoidActivationFunction());
+//        Neuron hiddenD2 = new Neuron(new SigmoidActivationFunction());
 
-        Neuron hiddenD2 = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenE2 = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenF2 = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenG2 = new Neuron(new SigmoidActivationFunction());
-        Neuron hiddenH2 = new Neuron(new SigmoidActivationFunction());
 
 
 
         hiddenLayer.AddNeuron(hiddenA2);
         hiddenLayer.AddNeuron(hiddenB2); 
-        hiddenLayer.AddNeuron(hiddenC2); 
-        hiddenLayer.AddNeuron(hiddenD2); 
-        hiddenLayer.AddNeuron(hiddenE2);
-        hiddenLayer.AddNeuron(hiddenF2);
-        hiddenLayer.AddNeuron(hiddenG2);
-        hiddenLayer.AddNeuron(hiddenH2); 
+//        hiddenLayer.AddNeuron(hiddenC2); 
+//        hiddenLayer.AddNeuron(hiddenD2); 
 
-////////////////////3rd hidden layer
-/*bias.setOutput(1);
-NeuralLayer hiddenLayer3 = new NeuralLayer(hiddenLayer2, bias);
-
-Neuron hiddenA3 = new Neuron(new SigmoidActivationFunction());
-Neuron hiddenB3 = new Neuron(new SigmoidActivationFunction());
-Neuron hiddenC3 = new Neuron(new SigmoidActivationFunction());
-
-Neuron hiddenD3 = new Neuron(new SigmoidActivationFunction());
-Neuron hiddenE3 = new Neuron(new SigmoidActivationFunction());
-Neuron hiddenF3 = new Neuron(new SigmoidActivationFunction());
-Neuron hiddenG3 = new Neuron(new SigmoidActivationFunction());
-Neuron hiddenH3 = new Neuron(new SigmoidActivationFunction());
-
-
-
-hiddenLayer.AddNeuron(hiddenA3);
-hiddenLayer.AddNeuron(hiddenB3); 
-hiddenLayer.AddNeuron(hiddenC3); 
-hiddenLayer.AddNeuron(hiddenD2); 
-hiddenLayer.AddNeuron(hiddenE2);
-hiddenLayer.AddNeuron(hiddenF2);
-hiddenLayer.AddNeuron(hiddenG2);
-hiddenLayer.AddNeuron(hiddenH2);  */
         
-        NeuralLayer outputLayer = new NeuralLayer(hiddenLayer);
-        Neuron xorNeuron = new Neuron(new SigmoidActivationFunction());
-        outputLayer.AddNeuron(xorNeuron);
+        NeuralLayer outputLayer = new NeuralLayer(hiddenLayer2);
+        Neuron Neuron = new Neuron(new SigmoidActivationFunction());
+        outputLayer.AddNeuron(Neuron);
 
-        xorNeuralNetwork.addNeuralLayer(inputLayer);
-        xorNeuralNetwork.addNeuralLayer(hiddenLayer);
- //       xorNeuralNetwork.addNeuralLayer(hiddenLayer2);
-    //    xorNeuralNetwork.addNeuralLayer(hiddenLayer3);
-        xorNeuralNetwork.addNeuralLayer(outputLayer);
+        NeuralNetwork.addNeuralLayer(inputLayer);
+        NeuralNetwork.addNeuralLayer(hiddenLayer);
+        NeuralNetwork.addNeuralLayer(hiddenLayer);
+        NeuralNetwork.addNeuralLayer(outputLayer);
 
-        return xorNeuralNetwork;
+        return NeuralNetwork;
     }
-
 }
